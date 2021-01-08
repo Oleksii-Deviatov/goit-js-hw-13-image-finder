@@ -6,6 +6,12 @@ body {
   background-image: url('./images/bg-pattern.png');
 }
 
+.nothing-found {
+  height: 50vh;
+  display: block;
+  margin: auto;
+}
+
 .search-form {
   width: 200px !important;
   margin: auto;

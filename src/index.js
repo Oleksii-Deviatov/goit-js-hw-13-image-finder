@@ -7,6 +7,7 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 import debounce from 'lodash.debounce';
 import refs from './js/refs';
 import markup from './templates/photo-card.hbs';
+import notFound from './js/notFound';
 import PixabayApiService from './js/apiService';
 import LoadMore from './js/load-more';
 import modal from './js/modal';
@@ -46,13 +47,24 @@ function onSearch(e) {
 
 function fetchImages() {
   loadMore.disable();
-  pixabayApiService.fetchImages().then(imgs => {
-    appendImagesMarkup(imgs);
-    loadMore.enable();
-    if (refs.galleryContainer.childElementCount > 12) {
-      loadMore.refs.btn.scrollIntoView({ block: 'end', behavior: 'smooth' });
-    }
-  });
+  pixabayApiService
+    .fetchImages()
+    .then(imgs => {
+      if (imgs.length === 0) {
+        refs.galleryContainer.innerHTML = notFound;
+        loadMore.hide();
+        return;
+      } else {
+        return imgs;
+      }
+    })
+    .then(imgs => {
+      appendImagesMarkup(imgs);
+      loadMore.enable();
+      if (refs.galleryContainer.childElementCount > 12) {
+        loadMore.refs.btn.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      }
+    });
 }
 
 function appendImagesMarkup(imgs) {
